@@ -4,169 +4,95 @@
 <title>Make a Wish</title>
 
 <style>
+
 body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  background:radial-gradient(circle at center,#1b1b1b,#000);
-  font-family:sans-serif;
-  color:white;
-  overflow:hidden;
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:white;
+font-family:sans-serif;
 }
 
-/* kue besar */
+/* kue 3D */
 .cake{
-  font-size:200px;
-  position:relative;
+position:relative;
+width:220px;
+height:120px;
+background:linear-gradient(#ffb6c1,#ff8fab);
+border-radius:15px;
+box-shadow:0 15px 25px rgba(0,0,0,0.2);
+}
+
+/* layer atas */
+.cake:before{
+content:"";
+position:absolute;
+top:-30px;
+width:220px;
+height:60px;
+background:#ffd6e0;
+border-radius:50%;
 }
 
 /* lilin */
 .candle{
-  width:22px;
-  height:140px;
-  background:#fff;
-  border-radius:6px;
-  position:absolute;
-  top:40px;
-  left:50%;
-  transform:translateX(-50%);
+position:absolute;
+top:-80px;
+left:50%;
+transform:translateX(-50%);
+width:12px;
+height:80px;
+background:white;
+border-radius:4px;
+animation:sway 2s infinite ease-in-out;
 }
 
 /* api */
 .flame{
-  width:26px;
-  height:45px;
-  background:radial-gradient(circle,#fff8a8,#ffb300,#ff6a00);
-  border-radius:50%;
-  position:absolute;
-  top:-40px;
-  left:-2px;
-  animation:flicker .12s infinite;
-  box-shadow:0 0 25px #ffb300;
+position:absolute;
+top:-20px;
+left:-6px;
+width:24px;
+height:30px;
+background:radial-gradient(circle,#fff,#ffcc00,#ff6a00);
+border-radius:50%;
+animation:flicker 0.15s infinite;
+}
+
+/* animasi goyang lilin */
+@keyframes sway{
+0%{transform:translateX(-50%) rotate(-2deg)}
+50%{transform:translateX(-50%) rotate(2deg)}
+100%{transform:translateX(-50%) rotate(-2deg)}
 }
 
 /* animasi api */
 @keyframes flicker{
-  0%{transform:scale(1) rotate(-2deg);}
-  25%{transform:scale(1.1) rotate(2deg);}
-  50%{transform:scale(.9) rotate(-1deg);}
-  75%{transform:scale(1.05) rotate(2deg);}
-  100%{transform:scale(1) rotate(-2deg);}
-}
-
-/* asap */
-.smoke{
-  position:absolute;
-  top:-45px;
-  left:3px;
-  font-size:30px;
-  opacity:0;
-  animation:smoke 2s forwards;
-}
-
-@keyframes smoke{
-  0%{opacity:0; transform:translateY(0);}
-  40%{opacity:1;}
-  100%{opacity:0; transform:translateY(-80px);}
+0%{transform:scale(1)}
+50%{transform:scale(1.1)}
+100%{transform:scale(0.95)}
 }
 
 h1{
-  margin-top:60px;
-  letter-spacing:2px;
-  font-weight:normal;
+margin-top:120px;
+font-size:28px;
 }
 
-/* tombol */
-button{
-  margin-top:40px;
-  padding:14px 30px;
-  font-size:18px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.hidden{display:none}
-
-/* confetti */
-.confetti{
-  position:absolute;
-  font-size:20px;
-  animation:fall 3s linear forwards;
-}
-
-@keyframes fall{
-  0%{transform:translateY(-100px)}
-  100%{transform:translateY(100vh)}
-}
 </style>
 </head>
 
 <body>
 
 <div class="cake">
-  🎂
-  <div class="candle">
-    <div id="flame" class="flame"></div>
-  </div>
+<div class="candle">
+<div class="flame"></div>
+</div>
 </div>
 
-<h1>Make a wish… lalu tiup lilinnya</h1>
-
-<div id="next" class="hidden">
-  <button onclick="location.href='page2.html'">Lanjut →</button>
-</div>
-
-<script>
-navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-
-const audioContext=new AudioContext();
-const mic=audioContext.createMediaStreamSource(stream);
-const analyser=audioContext.createAnalyser();
-
-mic.connect(analyser);
-
-const data=new Uint8Array(analyser.frequencyBinCount);
-
-function detect(){
-
-analyser.getByteFrequencyData(data);
-
-let volume=data.reduce((a,b)=>a+b)/data.length;
-
-if(volume>60){
-
-document.getElementById("flame").style.display="none";
-
-/* asap */
-let smoke=document.createElement("div");
-smoke.className="smoke";
-smoke.innerHTML="💨";
-document.querySelector(".candle").appendChild(smoke);
-
-/* confetti */
-for(let i=0;i<40;i++){
-let c=document.createElement("div");
-c.className="confetti";
-c.innerHTML="🎉";
-c.style.left=Math.random()*100+"vw";
-document.body.appendChild(c);
-}
-
-document.getElementById("next").classList.remove("hidden");
-
-}
-
-requestAnimationFrame(detect);
-}
-
-detect();
-
-});
-</script>
+<h1>Make a wish… lalu tiup lilinnya 🎂</h1>
 
 </body>
 </html>
