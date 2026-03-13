@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Birthday Surprise</title>
+
+<style>
+body{
+background:#ffd1dc;
+font-family:sans-serif;
+text-align:center;
+padding-top:120px;
+}
+
+.candle{
+font-size:100px;
+}
+
+.hidden{
+display:none;
+}
+
+button{
+padding:15px 25px;
+font-size:18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>Make a wish first ✨</h1>
+
+<div id="candle" class="candle">
+🕯️
+</div>
+
+<p>Tiup lilinnya 🎂</p>
+
+<div id="message" class="hidden">
+<h2>🎉 Happy Birthday 🎉</h2>
+<p>Ada sesuatu buat kamu di halaman berikutnya</p>
+<button onclick="nextPage()">Lanjut</button>
+</div>
+
+<script>
+
+navigator.mediaDevices.getUserMedia({ audio: true })
+.then(function(stream){
+const audioContext = new AudioContext();
+const mic = audioContext.createMediaStreamSource(stream);
+const analyser = audioContext.createAnalyser();
+
+mic.connect(analyser);
+
+const data = new Uint8Array(analyser.frequencyBinCount);
+
+function detectBlow(){
+analyser.getByteFrequencyData(data);
+
+let volume = data.reduce((a,b)=>a+b)/data.length;
+
+if(volume > 60){
+document.getElementById("candle").innerHTML="💨";
+document.getElementById("message").classList.remove("hidden");
+}
+
+requestAnimationFrame(detectBlow);
+}
+
+detectBlow();
+
+});
+
+function nextPage(){
+window.location.href="message.html";
+}
+
+</script>
+
+</body>
+</html>
