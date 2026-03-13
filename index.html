@@ -4,15 +4,29 @@
 <title>Birthday Surprise</title>
 
 <style>
+
 body{
-background:#ffd1dc;
+background:linear-gradient(135deg,#ff9ec4,#ffd6e7);
 font-family:sans-serif;
 text-align:center;
-padding-top:120px;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+overflow:hidden;
 }
 
-.candle{
-font-size:100px;
+.cake{
+font-size:120px;
+margin-bottom:20px;
+}
+
+.flame{
+font-size:40px;
+position:relative;
+top:-90px;
 }
 
 .hidden{
@@ -20,36 +34,49 @@ display:none;
 }
 
 button{
-padding:15px 25px;
+padding:14px 25px;
 font-size:18px;
 border:none;
 border-radius:10px;
 cursor:pointer;
+background:white;
+color:#ff4f8b;
+margin-top:20px;
 }
-</style>
 
+.confetti{
+position:absolute;
+font-size:20px;
+animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+0%{transform:translateY(-100vh);}
+100%{transform:translateY(100vh);}
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>Make a wish first ✨</h1>
+<h1>Make a wish ✨</h1>
 
-<div id="candle" class="candle">
-🕯️
-</div>
+<div class="cake">🎂</div>
+<div id="flame" class="flame">🔥</div>
 
-<p>Tiup lilinnya 🎂</p>
+<p>Tiup lilinnya 🎉</p>
 
-<div id="message" class="hidden">
+<div id="next" class="hidden">
 <h2>🎉 Happy Birthday 🎉</h2>
-<p>Ada sesuatu buat kamu di halaman berikutnya</p>
-<button onclick="nextPage()">Lanjut</button>
+<button onclick="location.href='message.html'">Lanjut</button>
 </div>
 
 <script>
 
-navigator.mediaDevices.getUserMedia({ audio: true })
+navigator.mediaDevices.getUserMedia({audio:true})
 .then(function(stream){
+
 const audioContext = new AudioContext();
 const mic = audioContext.createMediaStreamSource(stream);
 const analyser = audioContext.createAnalyser();
@@ -58,25 +85,44 @@ mic.connect(analyser);
 
 const data = new Uint8Array(analyser.frequencyBinCount);
 
-function detectBlow(){
+function detect(){
+
 analyser.getByteFrequencyData(data);
 
 let volume = data.reduce((a,b)=>a+b)/data.length;
 
-if(volume > 60){
-document.getElementById("candle").innerHTML="💨";
-document.getElementById("message").classList.remove("hidden");
+if(volume>60){
+
+document.getElementById("flame").innerHTML="💨";
+document.getElementById("next").classList.remove("hidden");
+
+createConfetti();
+
 }
 
-requestAnimationFrame(detectBlow);
+requestAnimationFrame(detect);
 }
 
-detectBlow();
+detect();
 
 });
 
-function nextPage(){
-window.location.href="message.html";
+function createConfetti(){
+
+for(let i=0;i<30;i++){
+
+let conf=document.createElement("div");
+
+conf.className="confetti";
+
+conf.innerHTML="🎉";
+
+conf.style.left=Math.random()*100+"vw";
+
+document.body.appendChild(conf);
+
+}
+
 }
 
 </script>
